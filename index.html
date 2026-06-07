@@ -1,0 +1,1736 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sinha Private Bank — Wealth Redefined</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #c9a84c;
+    --gold-light: #e8c97a;
+    --gold-pale: rgba(201, 168, 76, 0.15);
+    --navy: #080c1a;
+    --navy-mid: #0d1530;
+    --navy-light: #162040;
+    --glass-bg: rgba(255,255,255,0.04);
+    --glass-border: rgba(255,255,255,0.1);
+    --glass-border-gold: rgba(201,168,76,0.25);
+    --text-primary: #f0ece2;
+    --text-muted: rgba(240,236,226,0.55);
+    --text-gold: #c9a84c;
+    --success: #3ecf8e;
+    --danger: #ff5e6d;
+    --blue-accent: #4f9cf9;
+    --blur: blur(20px);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--navy);
+    color: var(--text-primary);
+    overflow-x: hidden;
+    min-height: 100vh;
+  }
+
+  /* ===== ANIMATED BACKGROUND ===== */
+  .bg-canvas {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+    pointer-events: none;
+  }
+
+  .bg-orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.18;
+    animation: orbFloat linear infinite;
+  }
+
+  .bg-orb:nth-child(1) {
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, #c9a84c, transparent);
+    top: -150px; left: -150px;
+    animation-duration: 25s;
+  }
+  .bg-orb:nth-child(2) {
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, #4f9cf9, transparent);
+    top: 40%; right: -100px;
+    animation-duration: 30s; animation-delay: -10s;
+    opacity: 0.12;
+  }
+  .bg-orb:nth-child(3) {
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, #c9a84c, transparent);
+    bottom: 10%; left: 30%;
+    animation-duration: 20s; animation-delay: -5s;
+    opacity: 0.1;
+  }
+
+  @keyframes orbFloat {
+    0%, 100% { transform: translateY(0px) scale(1); }
+    33% { transform: translateY(-40px) scale(1.05); }
+    66% { transform: translateY(20px) scale(0.95); }
+  }
+
+  .bg-grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(201,168,76,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(201,168,76,0.03) 1px, transparent 1px);
+    background-size: 60px 60px;
+  }
+
+  /* ===== GLASS MIXIN ===== */
+  .glass {
+    background: var(--glass-bg);
+    backdrop-filter: var(--blur);
+    -webkit-backdrop-filter: var(--blur);
+    border: 1px solid var(--glass-border);
+  }
+
+  .glass-gold {
+    background: rgba(201,168,76,0.06);
+    backdrop-filter: var(--blur);
+    -webkit-backdrop-filter: var(--blur);
+    border: 1px solid var(--glass-border-gold);
+  }
+
+  /* ===== NAV ===== */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 48px;
+    background: rgba(8,12,26,0.6);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border-bottom: 1px solid rgba(201,168,76,0.12);
+    transition: all 0.3s;
+  }
+
+  .nav-logo {
+    display: flex; align-items: center; gap: 12px;
+    text-decoration: none;
+  }
+
+  .logo-icon {
+    width: 40px; height: 40px;
+    background: linear-gradient(135deg, var(--gold), var(--gold-light));
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+    box-shadow: 0 0 20px rgba(201,168,76,0.3);
+  }
+
+  .logo-text {
+    display: flex; flex-direction: column;
+  }
+  .logo-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 18px; font-weight: 600;
+    color: var(--text-primary);
+    letter-spacing: 0.5px;
+    line-height: 1;
+  }
+  .logo-sub {
+    font-size: 9px; font-weight: 500;
+    letter-spacing: 2.5px; text-transform: uppercase;
+    color: var(--gold);
+    line-height: 1;
+    margin-top: 3px;
+  }
+
+  .nav-links {
+    display: flex; gap: 32px; list-style: none;
+  }
+  .nav-links a {
+    text-decoration: none; color: var(--text-muted);
+    font-size: 13px; font-weight: 500; letter-spacing: 0.3px;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--text-primary); }
+
+  .nav-actions { display: flex; gap: 12px; align-items: center; }
+
+  .btn-ghost {
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.15);
+    color: var(--text-primary);
+    padding: 9px 22px; border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px; font-weight: 500;
+    cursor: pointer; transition: all 0.2s;
+  }
+  .btn-ghost:hover {
+    border-color: var(--gold); color: var(--gold);
+    background: rgba(201,168,76,0.06);
+  }
+
+  .btn-gold {
+    background: linear-gradient(135deg, var(--gold), var(--gold-light));
+    border: none;
+    color: var(--navy);
+    padding: 10px 24px; border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px; font-weight: 600;
+    cursor: pointer; transition: all 0.2s;
+    box-shadow: 0 4px 15px rgba(201,168,76,0.25);
+  }
+  .btn-gold:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(201,168,76,0.4);
+  }
+
+  /* ===== MAIN CONTENT ===== */
+  main { position: relative; z-index: 1; }
+
+  /* ===== PAGES ===== */
+  .page { display: none; min-height: 100vh; padding-top: 80px; }
+  .page.active { display: block; }
+
+  /* ===== HERO ===== */
+  #page-home {
+    display: none;
+    flex-direction: column;
+  }
+  #page-home.active { display: flex; }
+
+  .hero {
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    min-height: calc(100vh - 80px);
+    padding: 60px 48px;
+    text-align: center;
+    position: relative;
+  }
+
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(201,168,76,0.1);
+    border: 1px solid rgba(201,168,76,0.25);
+    border-radius: 100px;
+    padding: 6px 16px;
+    font-size: 11px; font-weight: 500; letter-spacing: 2px;
+    text-transform: uppercase; color: var(--gold);
+    margin-bottom: 32px;
+    animation: fadeUp 0.8s ease forwards;
+  }
+
+  .hero-badge::before {
+    content: '';
+    width: 6px; height: 6px;
+    background: var(--gold);
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.8); }
+  }
+
+  .hero-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(52px, 8vw, 96px);
+    font-weight: 300;
+    line-height: 1.05;
+    letter-spacing: -1px;
+    color: var(--text-primary);
+    max-width: 900px;
+    margin-bottom: 24px;
+    animation: fadeUp 0.8s 0.1s ease both;
+  }
+
+  .hero-title em {
+    font-style: italic;
+    background: linear-gradient(135deg, var(--gold), var(--gold-light));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero-sub {
+    font-size: 16px; font-weight: 300; color: var(--text-muted);
+    max-width: 500px; line-height: 1.7;
+    margin-bottom: 48px;
+    animation: fadeUp 0.8s 0.2s ease both;
+  }
+
+  .hero-cta {
+    display: flex; gap: 16px; align-items: center;
+    animation: fadeUp 0.8s 0.3s ease both;
+  }
+
+  .btn-primary {
+    background: linear-gradient(135deg, var(--gold) 0%, var(--gold-light) 100%);
+    border: none; color: var(--navy);
+    padding: 16px 36px; border-radius: 10px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px; font-weight: 600;
+    cursor: pointer; transition: all 0.3s;
+    box-shadow: 0 8px 30px rgba(201,168,76,0.3);
+    letter-spacing: 0.3px;
+  }
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 40px rgba(201,168,76,0.45);
+  }
+
+  .btn-outline {
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.2);
+    color: var(--text-primary);
+    padding: 16px 36px; border-radius: 10px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px; font-weight: 500;
+    cursor: pointer; transition: all 0.3s;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .btn-outline:hover {
+    border-color: rgba(255,255,255,0.4);
+    background: rgba(255,255,255,0.05);
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ===== STATS STRIP ===== */
+  .stats-strip {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: rgba(255,255,255,0.06);
+    border-top: 1px solid rgba(255,255,255,0.06);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    margin: 0 0 80px;
+  }
+
+  .stat-item {
+    padding: 32px 40px;
+    background: rgba(8,12,26,0.8);
+    backdrop-filter: blur(20px);
+    text-align: center;
+    transition: background 0.3s;
+  }
+  .stat-item:hover { background: rgba(201,168,76,0.05); }
+
+  .stat-value {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 42px; font-weight: 300;
+    color: var(--text-primary);
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+  .stat-value span { color: var(--gold); }
+  .stat-label {
+    font-size: 11px; font-weight: 500;
+    letter-spacing: 2px; text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  /* ===== FEATURES ===== */
+  .section { padding: 80px 48px; max-width: 1200px; margin: 0 auto; }
+  .section-label {
+    font-size: 10px; font-weight: 600; letter-spacing: 3px;
+    text-transform: uppercase; color: var(--gold);
+    margin-bottom: 16px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .section-label::before {
+    content: '';
+    display: inline-block;
+    width: 24px; height: 1px;
+    background: var(--gold);
+  }
+  .section-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(36px, 5vw, 56px);
+    font-weight: 300; line-height: 1.1;
+    margin-bottom: 16px;
+  }
+  .section-title em { font-style: italic; color: var(--gold); }
+  .section-desc { color: var(--text-muted); font-size: 15px; line-height: 1.7; max-width: 480px; }
+
+  .features-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 20px; margin-top: 56px;
+  }
+
+  .feature-card {
+    padding: 32px;
+    border-radius: 16px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.08);
+    backdrop-filter: blur(20px);
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+  .feature-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(201,168,76,0.4), transparent);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .feature-card:hover {
+    border-color: rgba(201,168,76,0.2);
+    transform: translateY(-4px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+  }
+  .feature-card:hover::before { opacity: 1; }
+
+  .feature-icon {
+    width: 48px; height: 48px;
+    border-radius: 12px;
+    background: rgba(201,168,76,0.1);
+    border: 1px solid rgba(201,168,76,0.2);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+    margin-bottom: 20px;
+  }
+  .feature-title {
+    font-size: 16px; font-weight: 600;
+    margin-bottom: 10px;
+    color: var(--text-primary);
+  }
+  .feature-desc { font-size: 13px; color: var(--text-muted); line-height: 1.6; }
+
+  /* ===== DASHBOARD PAGE ===== */
+  #page-dashboard {
+    display: none;
+    padding: 90px 48px 48px;
+  }
+  #page-dashboard.active { display: block; }
+
+  .dashboard-header {
+    display: flex; justify-content: space-between; align-items: flex-start;
+    margin-bottom: 32px;
+  }
+  .dashboard-greeting {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 36px; font-weight: 300;
+  }
+  .dashboard-greeting span { color: var(--gold); font-style: italic; }
+  .dashboard-date {
+    font-size: 12px; color: var(--text-muted);
+    margin-top: 6px; letter-spacing: 0.5px;
+  }
+
+  .quick-actions {
+    display: flex; gap: 12px;
+  }
+  .action-btn {
+    display: flex; align-items: center; gap: 8px;
+    padding: 10px 18px; border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px; font-weight: 500;
+    cursor: pointer; border: 1px solid rgba(255,255,255,0.1);
+    background: rgba(255,255,255,0.04); color: var(--text-primary);
+    transition: all 0.2s;
+  }
+  .action-btn:hover { background: rgba(201,168,76,0.08); border-color: rgba(201,168,76,0.3); color: var(--gold); }
+  .action-btn.primary {
+    background: linear-gradient(135deg, var(--gold), var(--gold-light));
+    border-color: transparent; color: var(--navy); font-weight: 600;
+  }
+  .action-btn.primary:hover { box-shadow: 0 4px 16px rgba(201,168,76,0.35); }
+
+  /* ===== CARDS ROW ===== */
+  .cards-row {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr 1fr;
+    gap: 20px; margin-bottom: 24px;
+  }
+
+  /* Bank Card */
+  .bank-card {
+    border-radius: 20px;
+    padding: 32px;
+    background: linear-gradient(135deg, #1a2540 0%, #0d1530 60%, #162040 100%);
+    border: 1px solid rgba(201,168,76,0.2);
+    position: relative; overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+  }
+  .bank-card::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 200px; height: 200px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(201,168,76,0.15), transparent 70%);
+  }
+  .bank-card::after {
+    content: '';
+    position: absolute;
+    bottom: -40px; left: -40px;
+    width: 160px; height: 160px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(79,156,249,0.1), transparent 70%);
+  }
+  .card-chip {
+    display: flex; align-items: center; gap: 6px;
+    margin-bottom: 32px;
+  }
+  .chip {
+    width: 36px; height: 28px;
+    border-radius: 5px;
+    background: linear-gradient(135deg, var(--gold), var(--gold-light));
+    opacity: 0.9;
+  }
+  .card-network { font-size: 22px; opacity: 0.8; margin-left: auto; }
+  .card-number {
+    font-family: 'DM Mono', monospace;
+    font-size: 17px; letter-spacing: 3px;
+    color: var(--text-primary);
+    margin-bottom: 24px;
+    opacity: 0.9;
+  }
+  .card-footer {
+    display: flex; justify-content: space-between; align-items: flex-end;
+  }
+  .card-holder-label {
+    font-size: 9px; letter-spacing: 2px; text-transform: uppercase;
+    color: var(--text-muted); margin-bottom: 4px;
+  }
+  .card-holder-name {
+    font-size: 14px; font-weight: 500;
+    letter-spacing: 1px; color: var(--text-primary);
+  }
+  .card-expiry-label { font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 4px; }
+  .card-expiry { font-size: 14px; font-weight: 500; color: var(--text-primary); }
+  .card-balance-label { font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: var(--gold); margin-bottom: 4px; }
+  .card-balance { font-family: 'Cormorant Garamond', serif; font-size: 28px; font-weight: 600; color: var(--text-primary); }
+
+  /* Metric Cards */
+  .metric-card {
+    border-radius: 16px; padding: 24px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.08);
+    backdrop-filter: blur(20px);
+    display: flex; flex-direction: column;
+    justify-content: space-between;
+    min-height: 160px;
+  }
+  .metric-header {
+    display: flex; justify-content: space-between; align-items: flex-start;
+  }
+  .metric-label { font-size: 11px; font-weight: 500; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-muted); }
+  .metric-icon { font-size: 20px; opacity: 0.7; }
+  .metric-value {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 32px; font-weight: 300;
+    color: var(--text-primary);
+    line-height: 1;
+  }
+  .metric-change {
+    font-size: 12px; font-weight: 500;
+    display: flex; align-items: center; gap: 4px;
+    margin-top: 6px;
+  }
+  .metric-change.up { color: var(--success); }
+  .metric-change.down { color: var(--danger); }
+
+  /* ===== BOTTOM GRID ===== */
+  .bottom-grid {
+    display: grid;
+    grid-template-columns: 1.2fr 0.8fr;
+    gap: 20px;
+  }
+
+  /* Transactions */
+  .panel {
+    border-radius: 16px; padding: 28px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.08);
+    backdrop-filter: blur(20px);
+  }
+  .panel-header {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 24px;
+  }
+  .panel-title { font-size: 15px; font-weight: 600; }
+  .panel-link { font-size: 12px; color: var(--gold); cursor: pointer; text-decoration: none; }
+
+  .txn-list { display: flex; flex-direction: column; gap: 4px; }
+  .txn-item {
+    display: flex; align-items: center; gap: 14px;
+    padding: 12px; border-radius: 10px;
+    transition: background 0.2s; cursor: pointer;
+  }
+  .txn-item:hover { background: rgba(255,255,255,0.04); }
+  .txn-avatar {
+    width: 40px; height: 40px; border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; flex-shrink: 0;
+  }
+  .txn-info { flex: 1; }
+  .txn-name { font-size: 13px; font-weight: 500; margin-bottom: 2px; }
+  .txn-date { font-size: 11px; color: var(--text-muted); }
+  .txn-amount { font-size: 14px; font-weight: 600; font-family: 'DM Mono', monospace; }
+  .txn-amount.credit { color: var(--success); }
+  .txn-amount.debit { color: var(--danger); }
+
+  /* Spending Chart */
+  .spending-chart {
+    display: flex; flex-direction: column; gap: 14px;
+    margin-top: 8px;
+  }
+  .spend-bar-row { display: flex; flex-direction: column; gap: 6px; }
+  .spend-bar-label {
+    display: flex; justify-content: space-between;
+    font-size: 12px; color: var(--text-muted);
+  }
+  .spend-bar-label span:last-child { color: var(--text-primary); font-weight: 500; }
+  .spend-bar-track {
+    height: 6px; border-radius: 99px;
+    background: rgba(255,255,255,0.07);
+    overflow: hidden;
+  }
+  .spend-bar-fill {
+    height: 100%; border-radius: 99px;
+    transition: width 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* ===== OPEN ACCOUNT PAGE ===== */
+  #page-open.active {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 100px 24px 48px;
+    min-height: 100vh;
+  }
+
+  .account-form-wrapper {
+    width: 100%; max-width: 680px;
+  }
+
+  .form-header { text-align: center; margin-bottom: 40px; }
+  .form-header h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 40px; font-weight: 300;
+    margin-bottom: 8px;
+  }
+  .form-header h2 em { font-style: italic; color: var(--gold); }
+  .form-header p { font-size: 14px; color: var(--text-muted); }
+
+  .form-steps {
+    display: flex; gap: 0; margin-bottom: 36px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 12px; overflow: hidden;
+  }
+  .form-step {
+    flex: 1; padding: 14px 20px;
+    display: flex; align-items: center; gap: 10px;
+    font-size: 12px; font-weight: 500;
+    color: var(--text-muted);
+    border-right: 1px solid rgba(255,255,255,0.06);
+    transition: all 0.3s;
+  }
+  .form-step:last-child { border-right: none; }
+  .form-step.active {
+    background: rgba(201,168,76,0.08);
+    color: var(--gold);
+  }
+  .form-step.done {
+    color: var(--success);
+  }
+  .step-num {
+    width: 22px; height: 22px; border-radius: 50%;
+    background: rgba(255,255,255,0.08);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; flex-shrink: 0;
+  }
+  .form-step.active .step-num { background: var(--gold); color: var(--navy); }
+  .form-step.done .step-num { background: var(--success); color: var(--navy); }
+
+  .form-panel {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.08);
+    backdrop-filter: blur(24px);
+    border-radius: 20px;
+    padding: 40px;
+  }
+
+  .form-section-title {
+    font-size: 14px; font-weight: 600;
+    margin-bottom: 24px;
+    display: flex; align-items: center; gap: 10px;
+    color: var(--text-primary);
+  }
+  .form-section-title::after {
+    content: '';
+    flex: 1; height: 1px;
+    background: rgba(255,255,255,0.08);
+  }
+
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .form-row.single { grid-template-columns: 1fr; }
+
+  .form-group { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
+  .form-label {
+    font-size: 11px; font-weight: 500; letter-spacing: 1px;
+    text-transform: uppercase; color: var(--text-muted);
+  }
+  .form-input, .form-select {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 10px;
+    padding: 12px 16px;
+    color: var(--text-primary);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    transition: all 0.2s;
+    outline: none;
+    width: 100%;
+  }
+  .form-input:focus, .form-select:focus {
+    border-color: rgba(201,168,76,0.5);
+    background: rgba(201,168,76,0.04);
+    box-shadow: 0 0 0 3px rgba(201,168,76,0.08);
+  }
+  .form-input::placeholder { color: rgba(240,236,226,0.25); }
+  .form-select option { background: var(--navy-mid); }
+
+  .account-types {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;
+    margin-bottom: 24px;
+  }
+  .account-type-card {
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 12px; padding: 20px 16px;
+    cursor: pointer; transition: all 0.3s;
+    background: rgba(255,255,255,0.03);
+    text-align: center;
+  }
+  .account-type-card:hover { border-color: rgba(201,168,76,0.3); }
+  .account-type-card.selected {
+    border-color: var(--gold);
+    background: rgba(201,168,76,0.08);
+  }
+  .account-type-icon { font-size: 28px; margin-bottom: 8px; }
+  .account-type-name { font-size: 13px; font-weight: 600; margin-bottom: 4px; }
+  .account-type-desc { font-size: 11px; color: var(--text-muted); }
+
+  .form-footer {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-top: 32px; padding-top: 24px;
+    border-top: 1px solid rgba(255,255,255,0.08);
+  }
+  .btn-back {
+    background: transparent; border: 1px solid rgba(255,255,255,0.12);
+    color: var(--text-muted); padding: 12px 24px; border-radius: 10px;
+    font-family: 'DM Sans', sans-serif; font-size: 13px; cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-back:hover { border-color: rgba(255,255,255,0.25); color: var(--text-primary); }
+
+  .btn-next {
+    background: linear-gradient(135deg, var(--gold), var(--gold-light));
+    border: none; color: var(--navy);
+    padding: 13px 32px; border-radius: 10px;
+    font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 600;
+    cursor: pointer; transition: all 0.3s;
+    box-shadow: 0 6px 20px rgba(201,168,76,0.25);
+  }
+  .btn-next:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 10px 28px rgba(201,168,76,0.4);
+  }
+
+  /* ===== TRANSFER PAGE ===== */
+  #page-transfer.active {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 100px 24px 48px;
+  }
+
+  .transfer-wrapper {
+    width: 100%; max-width: 560px;
+  }
+
+  .transfer-type-tabs {
+    display: flex; background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 12px; padding: 4px;
+    margin-bottom: 28px;
+  }
+  .tab-btn {
+    flex: 1; padding: 10px;
+    border-radius: 9px; border: none;
+    background: transparent; color: var(--text-muted);
+    font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500;
+    cursor: pointer; transition: all 0.2s;
+  }
+  .tab-btn.active {
+    background: rgba(201,168,76,0.12);
+    color: var(--gold);
+    border: 1px solid rgba(201,168,76,0.2);
+  }
+
+  .amount-display {
+    text-align: center; padding: 40px 32px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 20px;
+    margin-bottom: 20px;
+    position: relative;
+    overflow: hidden;
+  }
+  .amount-display::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse at center top, rgba(201,168,76,0.06), transparent 60%);
+  }
+  .currency-symbol {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 32px; color: var(--gold);
+    vertical-align: top; margin-top: 16px;
+    margin-right: 4px;
+  }
+  .amount-input {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 72px; font-weight: 300;
+    color: var(--text-primary);
+    background: transparent; border: none;
+    outline: none; text-align: center;
+    width: 100%; max-width: 300px;
+    caret-color: var(--gold);
+  }
+  .amount-label { font-size: 12px; color: var(--text-muted); margin-top: 8px; }
+
+  .numpad {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 10px; margin-bottom: 24px;
+  }
+  .num-btn {
+    padding: 18px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 12px;
+    color: var(--text-primary); font-family: 'DM Sans', sans-serif;
+    font-size: 20px; font-weight: 400; cursor: pointer; transition: all 0.15s;
+  }
+  .num-btn:hover { background: rgba(255,255,255,0.08); border-color: rgba(201,168,76,0.2); }
+  .num-btn:active { transform: scale(0.96); }
+  .num-btn.special { font-size: 14px; font-weight: 500; color: var(--text-muted); }
+
+  /* ===== NOTIFICATION TOAST ===== */
+  .toast {
+    position: fixed; bottom: 32px; right: 32px;
+    background: rgba(20,28,50,0.95);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 14px; padding: 16px 20px;
+    display: flex; align-items: center; gap: 14px;
+    max-width: 340px;
+    transform: translateY(80px); opacity: 0;
+    transition: all 0.4s cubic-bezier(0.4,0,0.2,1);
+    z-index: 999;
+    backdrop-filter: blur(20px);
+  }
+  .toast.show { transform: translateY(0); opacity: 1; }
+  .toast-icon { font-size: 24px; flex-shrink: 0; }
+  .toast-title { font-size: 14px; font-weight: 600; margin-bottom: 2px; }
+  .toast-msg { font-size: 12px; color: var(--text-muted); }
+
+  /* ===== AUTH MODAL ===== */
+  .modal-overlay {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(8,12,26,0.8);
+    backdrop-filter: blur(10px);
+    z-index: 200;
+    align-items: center; justify-content: center;
+  }
+  .modal-overlay.open { display: flex; }
+
+  .modal {
+    background: rgba(13,21,48,0.98);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 24px;
+    padding: 40px;
+    width: 100%; max-width: 420px;
+    position: relative;
+    box-shadow: 0 40px 80px rgba(0,0,0,0.6);
+    animation: modalIn 0.3s ease;
+  }
+
+  @keyframes modalIn {
+    from { opacity: 0; transform: scale(0.95) translateY(10px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
+  }
+
+  .modal-close {
+    position: absolute; top: 20px; right: 20px;
+    width: 32px; height: 32px; border-radius: 8px;
+    background: rgba(255,255,255,0.06);
+    border: none; color: var(--text-muted);
+    font-size: 16px; cursor: pointer; transition: all 0.2s;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .modal-close:hover { background: rgba(255,255,255,0.12); color: var(--text-primary); }
+
+  .modal-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 30px; font-weight: 300;
+    margin-bottom: 6px;
+  }
+  .modal-title em { font-style: italic; color: var(--gold); }
+  .modal-sub { font-size: 13px; color: var(--text-muted); margin-bottom: 28px; }
+
+  .modal-tabs {
+    display: flex; gap: 0;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 10px; padding: 4px;
+    margin-bottom: 28px;
+  }
+  .modal-tab {
+    flex: 1; padding: 9px; border-radius: 7px;
+    border: none; background: transparent;
+    color: var(--text-muted); font-family: 'DM Sans', sans-serif;
+    font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.2s;
+  }
+  .modal-tab.active {
+    background: rgba(201,168,76,0.12);
+    color: var(--gold);
+    border: 1px solid rgba(201,168,76,0.2);
+  }
+
+  .modal-form-group { margin-bottom: 16px; }
+
+  .divider {
+    display: flex; align-items: center; gap: 12px;
+    margin: 20px 0; color: var(--text-muted); font-size: 12px;
+  }
+  .divider::before, .divider::after {
+    content: ''; flex: 1; height: 1px;
+    background: rgba(255,255,255,0.08);
+  }
+
+  /* ===== RESPONSIVE NAV MOBILE ===== */
+  .hamburger { display: none; }
+
+  /* ===== SCROLLBAR ===== */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: rgba(201,168,76,0.3); border-radius: 99px; }
+
+  /* ===== SUCCESS ANIMATION ===== */
+  .success-screen {
+    text-align: center; padding: 60px 40px;
+    display: none;
+  }
+  .success-screen.active { display: block; }
+  .success-circle {
+    width: 80px; height: 80px; border-radius: 50%;
+    background: rgba(62,207,142,0.1);
+    border: 2px solid var(--success);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 36px; margin: 0 auto 24px;
+    animation: successPop 0.5s cubic-bezier(0.4,0,0.2,1);
+  }
+  @keyframes successPop {
+    from { transform: scale(0); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+  }
+  .success-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 32px; font-weight: 300; margin-bottom: 12px;
+  }
+  .success-title em { color: var(--success); font-style: italic; }
+  .success-sub { font-size: 14px; color: var(--text-muted); margin-bottom: 32px; }
+
+  .account-number-display {
+    background: rgba(62,207,142,0.06);
+    border: 1px solid rgba(62,207,142,0.2);
+    border-radius: 12px; padding: 20px 28px;
+    margin-bottom: 28px; display: inline-block;
+  }
+  .acct-num-label { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 6px; }
+  .acct-num { font-family: 'DM Mono', monospace; font-size: 22px; color: var(--text-primary); letter-spacing: 3px; }
+
+</style>
+</head>
+<body>
+
+<!-- Background -->
+<div class="bg-canvas">
+  <div class="bg-orb"></div>
+  <div class="bg-orb"></div>
+  <div class="bg-orb"></div>
+  <div class="bg-grid"></div>
+</div>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="#" onclick="navigate('home')">
+    <div class="logo-icon">♦</div>
+    <div class="logo-text">
+      <span class="logo-name">Sinha Private Bank</span>
+      <span class="logo-sub">Est. 2025 · Ranchi</span>
+    </div>
+  </a>
+
+  <ul class="nav-links">
+    <li><a href="#" onclick="navigate('home')">Home</a></li>
+    <li><a href="#" onclick="navigate('dashboard')">Dashboard</a></li>
+    <li><a href="#" onclick="navigate('transfer')">Transfer</a></li>
+    <li><a href="#" onclick="navigate('open')">Open Account</a></li>
+    <li><a href="#">Services</a></li>
+  </ul>
+
+  <div class="nav-actions">
+    <button class="btn-ghost" onclick="openModal('login')">Sign In</button>
+    <button class="btn-gold" onclick="navigate('open')">Open Account</button>
+  </div>
+</nav>
+
+<!-- MAIN -->
+<main>
+
+  <!-- HOME PAGE -->
+  <div id="page-home" class="page active">
+    <section class="hero">
+      <div class="hero-badge">India's Premier Private Bank</div>
+      <h1 class="hero-title">
+        Your Wealth,<br>
+        <em>Elevated</em> to Excellence
+      </h1>
+      <p class="hero-sub">
+        Experience private banking crafted for those who demand more — bespoke financial solutions, exclusive privileges, and uncompromising security.
+      </p>
+      <div class="hero-cta">
+        <button class="btn-primary" onclick="navigate('open')">Open Your Account</button>
+        <button class="btn-outline" onclick="navigate('dashboard')">
+          <span>▶</span> View Dashboard
+        </button>
+      </div>
+    </section>
+
+    <div class="stats-strip">
+      <div class="stat-item">
+        <div class="stat-value">₹<span>2.4</span>T</div>
+        <div class="stat-label">Assets Under Management</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value"><span>98</span>%</div>
+        <div class="stat-label">Client Satisfaction</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value"><span>180K</span>+</div>
+        <div class="stat-label">Accounts Served</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value"><span>25</span>yrs</div>
+        <div class="stat-label">Banking Excellence</div>
+      </div>
+    </div>
+
+    <section class="section">
+      <div class="section-label">Why Choose Us</div>
+      <h2 class="section-title">Banking that works<br>as hard as <em>you do</em></h2>
+      <p class="section-desc">Every feature engineered for the modern high-achiever. Your goals, your pace, your bank.</p>
+
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">🔐</div>
+          <div class="feature-title">Bank-Grade Security</div>
+          <div class="feature-desc">256-bit AES encryption, biometric authentication, and real-time fraud monitoring across every transaction.</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">⚡</div>
+          <div class="feature-title">Instant Transfers</div>
+          <div class="feature-desc">Send money anywhere in India via NEFT, RTGS, IMPS, or UPI — instantly, 24 hours a day, 365 days a year.</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📈</div>
+          <div class="feature-title">Wealth Management</div>
+          <div class="feature-desc">Access curated investment portfolios, mutual funds, and fixed deposits with market-leading returns.</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">💎</div>
+          <div class="feature-title">Platinum Privileges</div>
+          <div class="feature-desc">Exclusive lounge access, concierge service, zero-fee foreign transactions, and priority relationship manager.</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📱</div>
+          <div class="feature-title">Digital Banking</div>
+          <div class="feature-desc">Complete banking control from anywhere — open accounts, apply for loans, and manage all finances online.</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🤝</div>
+          <div class="feature-title">Dedicated Support</div>
+          <div class="feature-desc">Your personal relationship manager is available round the clock for bespoke financial guidance.</div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- DASHBOARD PAGE -->
+  <div id="page-dashboard" class="page">
+    <div class="dashboard-header">
+      <div>
+        <div class="dashboard-greeting">Good morning, <span>Harshit</span> ✦</div>
+        <div class="dashboard-date" id="dash-date"></div>
+      </div>
+      <div class="quick-actions">
+        <button class="action-btn" onclick="navigate('transfer')">↑ Send</button>
+        <button class="action-btn">↓ Receive</button>
+        <button class="action-btn primary" onclick="navigate('transfer')">+ New Transfer</button>
+      </div>
+    </div>
+
+    <div class="cards-row">
+      <!-- Bank Card -->
+      <div class="bank-card">
+        <div class="card-chip">
+          <div class="chip"></div>
+          <div style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:rgba(240,236,226,0.5);margin-left:8px;">Platinum Private</div>
+          <div class="card-network">◉◎</div>
+        </div>
+        <div class="card-number">•••• &nbsp;•••• &nbsp;•••• &nbsp;8842</div>
+        <div style="margin-bottom:20px;">
+          <div class="card-balance-label">Available Balance</div>
+          <div class="card-balance">₹ 24,87,540.00</div>
+        </div>
+        <div class="card-footer">
+          <div>
+            <div class="card-holder-label">Card Holder</div>
+            <div class="card-holder-name">HARSHIT SINHA</div>
+          </div>
+          <div>
+            <div class="card-expiry-label">Expires</div>
+            <div class="card-expiry">08 / 29</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Metric: Income -->
+      <div class="metric-card">
+        <div class="metric-header">
+          <div class="metric-label">This Month's Income</div>
+          <div class="metric-icon">💹</div>
+        </div>
+        <div>
+          <div class="metric-value">₹3.2L</div>
+          <div class="metric-change up">▲ 12.4% vs last month</div>
+        </div>
+      </div>
+
+      <!-- Metric: Spending -->
+      <div class="metric-card">
+        <div class="metric-header">
+          <div class="metric-label">This Month's Spend</div>
+          <div class="metric-icon">🛒</div>
+        </div>
+        <div>
+          <div class="metric-value">₹87K</div>
+          <div class="metric-change down">▼ 5.1% vs last month</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bottom-grid">
+      <!-- Transactions -->
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">Recent Transactions</div>
+          <a class="panel-link">View All →</a>
+        </div>
+        <div class="txn-list">
+          <div class="txn-item">
+            <div class="txn-avatar" style="background:rgba(62,207,142,0.1)">🏢</div>
+            <div class="txn-info">
+              <div class="txn-name">Salary Credit — TechCorp Ltd</div>
+              <div class="txn-date">Today, 9:00 AM</div>
+            </div>
+            <div class="txn-amount credit">+₹2,40,000</div>
+          </div>
+          <div class="txn-item">
+            <div class="txn-avatar" style="background:rgba(255,94,109,0.1)">🛍️</div>
+            <div class="txn-info">
+              <div class="txn-name">Myntra Shopping</div>
+              <div class="txn-date">Yesterday, 3:15 PM</div>
+            </div>
+            <div class="txn-amount debit">-₹4,299</div>
+          </div>
+          <div class="txn-item">
+            <div class="txn-avatar" style="background:rgba(79,156,249,0.1)">🏦</div>
+            <div class="txn-info">
+              <div class="txn-name">FD Interest Credit</div>
+              <div class="txn-date">Jun 5, 12:00 PM</div>
+            </div>
+            <div class="txn-amount credit">+₹18,500</div>
+          </div>
+          <div class="txn-item">
+            <div class="txn-avatar" style="background:rgba(255,94,109,0.1)">⚡</div>
+            <div class="txn-info">
+              <div class="txn-name">Electricity Bill — JSEB</div>
+              <div class="txn-date">Jun 4, 10:30 AM</div>
+            </div>
+            <div class="txn-amount debit">-₹2,340</div>
+          </div>
+          <div class="txn-item">
+            <div class="txn-avatar" style="background:rgba(201,168,76,0.1)">💰</div>
+            <div class="txn-info">
+              <div class="txn-name">Transfer Received — Amit K.</div>
+              <div class="txn-date">Jun 3, 6:45 PM</div>
+            </div>
+            <div class="txn-amount credit">+₹50,000</div>
+          </div>
+          <div class="txn-item">
+            <div class="txn-avatar" style="background:rgba(255,94,109,0.1)">🚗</div>
+            <div class="txn-info">
+              <div class="txn-name">Ola — EMI Debit</div>
+              <div class="txn-date">Jun 2, 9:00 AM</div>
+            </div>
+            <div class="txn-amount debit">-₹12,400</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Spending Analysis -->
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">Spending Analysis</div>
+          <a class="panel-link">June 2025</a>
+        </div>
+        <div class="spending-chart">
+          <div class="spend-bar-row">
+            <div class="spend-bar-label"><span>🏠 Housing</span><span>₹22,000</span></div>
+            <div class="spend-bar-track"><div class="spend-bar-fill" style="width:70%;background:linear-gradient(90deg,#c9a84c,#e8c97a)"></div></div>
+          </div>
+          <div class="spend-bar-row">
+            <div class="spend-bar-label"><span>🛒 Shopping</span><span>₹18,500</span></div>
+            <div class="spend-bar-track"><div class="spend-bar-fill" style="width:58%;background:linear-gradient(90deg,#4f9cf9,#7cb4fb)"></div></div>
+          </div>
+          <div class="spend-bar-row">
+            <div class="spend-bar-label"><span>🍽️ Dining</span><span>₹12,200</span></div>
+            <div class="spend-bar-track"><div class="spend-bar-fill" style="width:38%;background:linear-gradient(90deg,#3ecf8e,#6edfa8)"></div></div>
+          </div>
+          <div class="spend-bar-row">
+            <div class="spend-bar-label"><span>🚗 Transport</span><span>₹14,800</span></div>
+            <div class="spend-bar-track"><div class="spend-bar-fill" style="width:46%;background:linear-gradient(90deg,#ff5e6d,#ff8d97)"></div></div>
+          </div>
+          <div class="spend-bar-row">
+            <div class="spend-bar-label"><span>⚡ Utilities</span><span>₹8,400</span></div>
+            <div class="spend-bar-track"><div class="spend-bar-fill" style="width:26%;background:linear-gradient(90deg,#a78bfa,#c4b5fd)"></div></div>
+          </div>
+          <div class="spend-bar-row">
+            <div class="spend-bar-label"><span>📱 Subscriptions</span><span>₹5,100</span></div>
+            <div class="spend-bar-track"><div class="spend-bar-fill" style="width:16%;background:linear-gradient(90deg,#f59e0b,#fbbf24)"></div></div>
+          </div>
+        </div>
+
+        <div style="margin-top:28px; padding-top:20px; border-top:1px solid rgba(255,255,255,0.08); display:flex; justify-content:space-between; align-items:center;">
+          <div>
+            <div style="font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-muted);margin-bottom:4px;">Total Spent</div>
+            <div style="font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:300;">₹81,000</div>
+          </div>
+          <div style="text-align:right;">
+            <div style="font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-muted);margin-bottom:4px;">Budget Used</div>
+            <div style="font-size:28px;font-weight:600;color:var(--success);">67%</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TRANSFER PAGE -->
+  <div id="page-transfer" class="page">
+    <div class="transfer-wrapper" style="margin:0 auto;">
+      <div class="form-header">
+        <h2>Send <em>Money</em></h2>
+        <p>Fast, secure transfers to anyone, anywhere</p>
+      </div>
+
+      <div class="transfer-type-tabs">
+        <button class="tab-btn active" onclick="selectTab(this)">UPI</button>
+        <button class="tab-btn" onclick="selectTab(this)">NEFT/RTGS</button>
+        <button class="tab-btn" onclick="selectTab(this)">IMPS</button>
+        <button class="tab-btn" onclick="selectTab(this)">International</button>
+      </div>
+
+      <div class="amount-display">
+        <div>
+          <span class="currency-symbol">₹</span>
+          <input class="amount-input" id="transfer-amount" type="text" value="0" readonly>
+        </div>
+        <div class="amount-label">Enter amount to transfer</div>
+      </div>
+
+      <div class="numpad">
+        <button class="num-btn" onclick="numPad('1')">1</button>
+        <button class="num-btn" onclick="numPad('2')">2</button>
+        <button class="num-btn" onclick="numPad('3')">3</button>
+        <button class="num-btn" onclick="numPad('4')">4</button>
+        <button class="num-btn" onclick="numPad('5')">5</button>
+        <button class="num-btn" onclick="numPad('6')">6</button>
+        <button class="num-btn" onclick="numPad('7')">7</button>
+        <button class="num-btn" onclick="numPad('8')">8</button>
+        <button class="num-btn" onclick="numPad('9')">9</button>
+        <button class="num-btn special" onclick="numPad('00')">00</button>
+        <button class="num-btn" onclick="numPad('0')">0</button>
+        <button class="num-btn special" onclick="numPad('back')">⌫</button>
+      </div>
+
+      <div class="form-panel" style="margin-bottom:20px;">
+        <div class="form-section-title">Recipient Details</div>
+        <div class="form-group">
+          <label class="form-label">UPI ID / Account Number</label>
+          <input class="form-input" type="text" placeholder="name@upi or account number">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Remarks (Optional)</label>
+          <input class="form-input" type="text" placeholder="e.g. Rent, Groceries...">
+        </div>
+        <button class="btn-next" style="width:100%" onclick="doTransfer()">
+          Send Money Securely →
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- OPEN ACCOUNT PAGE -->
+  <div id="page-open" class="page">
+    <div class="account-form-wrapper">
+      <div class="form-header">
+        <h2>Open Your <em>Account</em></h2>
+        <p>Takes just 5 minutes — 100% digital, zero paperwork</p>
+      </div>
+
+      <div class="form-steps">
+        <div class="form-step active" id="step-tab-1">
+          <div class="step-num">1</div> Account Type
+        </div>
+        <div class="form-step" id="step-tab-2">
+          <div class="step-num">2</div> Personal Info
+        </div>
+        <div class="form-step" id="step-tab-3">
+          <div class="step-num">3</div> KYC & Verify
+        </div>
+        <div class="form-step" id="step-tab-4">
+          <div class="step-num">4</div> Confirm
+        </div>
+      </div>
+
+      <!-- Step 1 -->
+      <div class="form-panel" id="form-step-1">
+        <div class="form-section-title">Choose Account Type</div>
+        <div class="account-types">
+          <div class="account-type-card selected" onclick="selectAccountType(this)">
+            <div class="account-type-icon">💎</div>
+            <div class="account-type-name">Platinum</div>
+            <div class="account-type-desc">For HNI clients. Min ₹10L</div>
+          </div>
+          <div class="account-type-card" onclick="selectAccountType(this)">
+            <div class="account-type-icon">🏦</div>
+            <div class="account-type-name">Savings</div>
+            <div class="account-type-desc">Standard. Min ₹5,000</div>
+          </div>
+          <div class="account-type-card" onclick="selectAccountType(this)">
+            <div class="account-type-icon">🏢</div>
+            <div class="account-type-name">Current</div>
+            <div class="account-type-desc">Business accounts</div>
+          </div>
+        </div>
+
+        <div class="form-section-title">Account Currency & Branch</div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Currency</label>
+            <select class="form-select">
+              <option>INR — Indian Rupee</option>
+              <option>USD — US Dollar</option>
+              <option>GBP — British Pound</option>
+              <option>EUR — Euro</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Branch</label>
+            <select class="form-select">
+              <option>Ranchi — Main Branch</option>
+              <option>Mumbai — BKC</option>
+              <option>Delhi — Connaught Place</option>
+              <option>Bangalore — MG Road</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-footer">
+          <div></div>
+          <button class="btn-next" onclick="nextStep(1)">Continue →</button>
+        </div>
+      </div>
+
+      <!-- Step 2 -->
+      <div class="form-panel" id="form-step-2" style="display:none;">
+        <div class="form-section-title">Personal Information</div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">First Name</label>
+            <input class="form-input" type="text" placeholder="Harshit" value="Harshit">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Last Name</label>
+            <input class="form-input" type="text" placeholder="Sinha" value="Sinha">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Date of Birth</label>
+            <input class="form-input" type="date">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Gender</label>
+            <select class="form-select">
+              <option>Male</option><option>Female</option><option>Other</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row single">
+          <div class="form-group">
+            <label class="form-label">Email Address</label>
+            <input class="form-input" type="email" placeholder="harshit@example.com">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Mobile Number</label>
+            <input class="form-input" type="tel" placeholder="+91 98765 43210">
+          </div>
+          <div class="form-group">
+            <label class="form-label">PAN Number</label>
+            <input class="form-input" type="text" placeholder="ABCDE1234F" style="text-transform:uppercase;">
+          </div>
+        </div>
+        <div class="form-row single">
+          <div class="form-group">
+            <label class="form-label">Residential Address</label>
+            <input class="form-input" type="text" placeholder="House / Flat, Street, City, PIN">
+          </div>
+        </div>
+
+        <div class="form-footer">
+          <button class="btn-back" onclick="prevStep(2)">← Back</button>
+          <button class="btn-next" onclick="nextStep(2)">Continue →</button>
+        </div>
+      </div>
+
+      <!-- Step 3 -->
+      <div class="form-panel" id="form-step-3" style="display:none;">
+        <div class="form-section-title">KYC Verification</div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">ID Type</label>
+            <select class="form-select">
+              <option>Aadhaar Card</option>
+              <option>Passport</option>
+              <option>Voter ID</option>
+              <option>Driving License</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">ID Number</label>
+            <input class="form-input" type="text" placeholder="XXXX XXXX XXXX">
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+          <div style="border:1px dashed rgba(255,255,255,0.15);border-radius:12px;padding:28px 20px;text-align:center;cursor:pointer;transition:all 0.2s;" onmouseenter="this.style.borderColor='rgba(201,168,76,0.4)'" onmouseleave="this.style.borderColor='rgba(255,255,255,0.15)'">
+            <div style="font-size:28px;margin-bottom:10px;">📄</div>
+            <div style="font-size:13px;font-weight:500;margin-bottom:4px;">ID Front</div>
+            <div style="font-size:11px;color:var(--text-muted);">Click to upload</div>
+          </div>
+          <div style="border:1px dashed rgba(255,255,255,0.15);border-radius:12px;padding:28px 20px;text-align:center;cursor:pointer;transition:all 0.2s;" onmouseenter="this.style.borderColor='rgba(201,168,76,0.4)'" onmouseleave="this.style.borderColor='rgba(255,255,255,0.15)'">
+            <div style="font-size:28px;margin-bottom:10px;">🤳</div>
+            <div style="font-size:13px;font-weight:500;margin-bottom:4px;">Selfie / Photo</div>
+            <div style="font-size:11px;color:var(--text-muted);">Click to upload</div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Set Account Password</label>
+          <input class="form-input" type="password" placeholder="Min. 8 characters, include symbols">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Confirm Password</label>
+          <input class="form-input" type="password" placeholder="Repeat password">
+        </div>
+
+        <div class="form-footer">
+          <button class="btn-back" onclick="prevStep(3)">← Back</button>
+          <button class="btn-next" onclick="nextStep(3)">Continue →</button>
+        </div>
+      </div>
+
+      <!-- Step 4 -->
+      <div class="form-panel" id="form-step-4" style="display:none;">
+        <div id="review-screen">
+          <div class="form-section-title">Review & Confirm</div>
+
+          <div style="background:rgba(201,168,76,0.05);border:1px solid rgba(201,168,76,0.15);border-radius:12px;padding:24px;margin-bottom:24px;">
+            <div style="display:flex;justify-content:space-between;margin-bottom:14px;">
+              <span style="font-size:12px;color:var(--text-muted);">Account Type</span>
+              <span style="font-size:13px;font-weight:600;color:var(--gold)">💎 Platinum Private</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;margin-bottom:14px;">
+              <span style="font-size:12px;color:var(--text-muted);">Account Holder</span>
+              <span style="font-size:13px;font-weight:500;">Harshit Sinha</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;margin-bottom:14px;">
+              <span style="font-size:12px;color:var(--text-muted);">Branch</span>
+              <span style="font-size:13px;font-weight:500;">Ranchi — Main Branch</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;">
+              <span style="font-size:12px;color:var(--text-muted);">Currency</span>
+              <span style="font-size:13px;font-weight:500;">INR — Indian Rupee</span>
+            </div>
+          </div>
+
+          <div style="display:flex;align-items:flex-start;gap:12px;padding:16px;background:rgba(62,207,142,0.05);border:1px solid rgba(62,207,142,0.15);border-radius:10px;margin-bottom:24px;">
+            <span>✅</span>
+            <div style="font-size:12px;color:var(--text-muted);line-height:1.6;">
+              By submitting, you agree to Sinha Private Bank's <span style="color:var(--gold);cursor:pointer;">Terms & Conditions</span>, <span style="color:var(--gold);cursor:pointer;">Privacy Policy</span>, and consent to KYC verification as per RBI guidelines.
+            </div>
+          </div>
+
+          <div class="form-footer">
+            <button class="btn-back" onclick="prevStep(4)">← Back</button>
+            <button class="btn-next" onclick="submitAccount()">🎉 Open My Account</button>
+          </div>
+        </div>
+
+        <!-- Success State -->
+        <div class="success-screen" id="success-screen">
+          <div class="success-circle">✓</div>
+          <h3 class="success-title">Account <em>Opened!</em></h3>
+          <p class="success-sub">Welcome to Sinha Private Bank. Your platinum account has been created successfully.</p>
+          <div class="account-number-display">
+            <div class="acct-num-label">Your Account Number</div>
+            <div class="acct-num" id="gen-acct-num">SPB 7842 0091 3356</div>
+          </div>
+          <button class="btn-next" onclick="navigate('dashboard')">Go to Dashboard →</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</main>
+
+<!-- AUTH MODAL -->
+<div class="modal-overlay" id="modal-overlay">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <h3 class="modal-title">Welcome <em>Back</em></h3>
+    <p class="modal-sub">Sign in to your Sinha Private Bank account</p>
+
+    <div class="modal-tabs">
+      <button class="modal-tab active" onclick="switchModalTab(this,'login-form')">Sign In</button>
+      <button class="modal-tab" onclick="switchModalTab(this,'signup-form')">Register</button>
+    </div>
+
+    <div id="login-form">
+      <div class="modal-form-group">
+        <label class="form-label">Account Number / Email</label>
+        <input class="form-input" type="text" placeholder="Your account number or email">
+      </div>
+      <div class="modal-form-group" style="margin-bottom:24px;">
+        <label class="form-label">Password / MPIN</label>
+        <input class="form-input" type="password" placeholder="••••••••">
+      </div>
+      <button class="btn-next" style="width:100%;margin-bottom:16px;" onclick="loginSuccess()">Sign In Securely</button>
+      <div style="text-align:center;font-size:12px;color:var(--text-muted);">
+        <span style="color:var(--gold);cursor:pointer;">Forgot Password?</span>
+      </div>
+    </div>
+
+    <div id="signup-form" style="display:none;">
+      <div class="modal-form-group">
+        <label class="form-label">Full Name</label>
+        <input class="form-input" type="text" placeholder="As per PAN/Aadhaar">
+      </div>
+      <div class="modal-form-group">
+        <label class="form-label">Mobile Number</label>
+        <input class="form-input" type="tel" placeholder="+91 XXXXX XXXXX">
+      </div>
+      <div class="modal-form-group" style="margin-bottom:24px;">
+        <label class="form-label">Email</label>
+        <input class="form-input" type="email" placeholder="you@example.com">
+      </div>
+      <button class="btn-next" style="width:100%;" onclick="closeModal();navigate('open')">Create Account →</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <div class="toast-icon" id="toast-icon">✅</div>
+  <div>
+    <div class="toast-title" id="toast-title">Success</div>
+    <div class="toast-msg" id="toast-msg">Operation completed.</div>
+  </div>
+</div>
+
+<script>
+  // ===== NAVIGATION =====
+  function navigate(page) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    const target = document.getElementById('page-' + page);
+    if (target) target.classList.add('active');
+    window.scrollTo(0, 0);
+  }
+
+  // ===== DASHBOARD DATE =====
+  const now = new Date();
+  const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+  const el = document.getElementById('dash-date');
+  if (el) el.textContent = now.toLocaleDateString('en-IN', options);
+
+  // ===== MODAL =====
+  function openModal(type) {
+    document.getElementById('modal-overlay').classList.add('open');
+  }
+  function closeModal() {
+    document.getElementById('modal-overlay').classList.remove('open');
+  }
+  document.getElementById('modal-overlay').addEventListener('click', function(e) {
+    if (e.target === this) closeModal();
+  });
+
+  function switchModalTab(btn, formId) {
+    document.querySelectorAll('.modal-tab').forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('login-form').style.display = 'none';
+    document.getElementById('signup-form').style.display = 'none';
+    document.getElementById(formId).style.display = 'block';
+  }
+
+  function loginSuccess() {
+    closeModal();
+    showToast('✅', 'Signed In', 'Welcome back, Harshit!');
+    navigate('dashboard');
+  }
+
+  // ===== TOAST =====
+  let toastTimeout;
+  function showToast(icon, title, msg) {
+    document.getElementById('toast-icon').textContent = icon;
+    document.getElementById('toast-title').textContent = title;
+    document.getElementById('toast-msg').textContent = msg;
+    const toast = document.getElementById('toast');
+    toast.classList.add('show');
+    clearTimeout(toastTimeout);
+    toastTimeout = setTimeout(() => toast.classList.remove('show'), 3500);
+  }
+
+  // ===== ACCOUNT TYPE =====
+  function selectAccountType(el) {
+    document.querySelectorAll('.account-type-card').forEach(c => c.classList.remove('selected'));
+    el.classList.add('selected');
+  }
+
+  // ===== FORM STEPS =====
+  function nextStep(step) {
+    document.getElementById('form-step-' + step).style.display = 'none';
+    document.getElementById('form-step-' + (step+1)).style.display = 'block';
+
+    document.getElementById('step-tab-' + step).classList.remove('active');
+    document.getElementById('step-tab-' + step).classList.add('done');
+    document.getElementById('step-tab-' + step).querySelector('.step-num').textContent = '✓';
+    document.getElementById('step-tab-' + (step+1)).classList.add('active');
+    window.scrollTo(0, 0);
+  }
+
+  function prevStep(step) {
+    document.getElementById('form-step-' + step).style.display = 'none';
+    document.getElementById('form-step-' + (step-1)).style.display = 'block';
+    document.getElementById('step-tab-' + step).classList.remove('active');
+    document.getElementById('step-tab-' + (step-1)).classList.remove('done');
+    document.getElementById('step-tab-' + (step-1)).classList.add('active');
+    document.getElementById('step-tab-' + (step-1)).querySelector('.step-num').textContent = step-1;
+    window.scrollTo(0, 0);
+  }
+
+  function submitAccount() {
+    document.getElementById('review-screen').style.display = 'none';
+    document.getElementById('success-screen').classList.add('active');
+
+    // Generate random account number
+    const num = 'SPB ' + Math.floor(1000+Math.random()*9000) + ' '
+      + Math.floor(1000+Math.random()*9000) + ' '
+      + Math.floor(1000+Math.random()*9000);
+    document.getElementById('gen-acct-num').textContent = num;
+
+    document.getElementById('step-tab-4').classList.remove('active');
+    document.getElementById('step-tab-4').classList.add('done');
+    document.getElementById('step-tab-4').querySelector('.step-num').textContent = '✓';
+    showToast('🎉', 'Account Created!', 'Your Platinum account is ready.');
+  }
+
+  // ===== NUMPAD =====
+  function numPad(val) {
+    const input = document.getElementById('transfer-amount');
+    let current = input.value.replace(/,/g, '');
+    if (val === 'back') {
+      current = current.length > 1 ? current.slice(0,-1) : '0';
+    } else if (val === '00') {
+      current = current === '0' ? '0' : current + '00';
+    } else {
+      current = current === '0' ? val : current + val;
+    }
+    if (parseInt(current) > 9999999) return;
+    input.value = parseInt(current).toLocaleString('en-IN');
+  }
+
+  // ===== TAB SELECT =====
+  function selectTab(btn) {
+    document.querySelectorAll('.tab-btn').forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+  }
+
+  // ===== TRANSFER =====
+  function doTransfer() {
+    const amt = document.getElementById('transfer-amount').value;
+    if (!amt || amt === '0') {
+      showToast('⚠️', 'Enter Amount', 'Please enter a valid transfer amount.');
+      return;
+    }
+    showToast('✅', 'Transfer Initiated!', `₹${amt} transfer is being processed.`);
+    setTimeout(() => {
+      document.getElementById('transfer-amount').value = '0';
+    }, 1000);
+  }
+
+  // ===== NAV SCROLL EFFECT =====
+  window.addEventListener('scroll', () => {
+    const nav = document.querySelector('nav');
+    if (window.scrollY > 20) {
+      nav.style.background = 'rgba(8,12,26,0.92)';
+    } else {
+      nav.style.background = 'rgba(8,12,26,0.6)';
+    }
+  });
+</script>
+</body>
+</html>
